@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://b5w2w2q2q2q2"]
+
+[ext_resource type="Script" uid="uid://b7k873ufil8va" path="res://Scripts/Player.cs" id="1_um8lo"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_um8lo"]
+friction = 0.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_f5d5g"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_um8lo"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_um8lo"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Base:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("Base/CameraGimbal:rotation")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("Base", "CameraGimbal", "Sync") groups=["Players"]]
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+physics_material_override = SubResource("PhysicsMaterial_um8lo")
+continuous_cd = true
+contact_monitor = true
+max_contacts_reported = 4
+linear_damp = 4.0
+script = ExtResource("1_um8lo")
+Speed = 20.0
+Base = NodePath("Base")
+CameraGimbal = NodePath("Base/CameraGimbal")
+Sync = NodePath("MultiplayerSynchronizer")
+
+[node name="Base" type="Node3D" parent="."]
+
+[node name="CameraGimbal" type="Marker3D" parent="Base"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_f5d5g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_um8lo")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_um8lo")

@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3 uid="uid://b1lfhnkk7ri25"]
+
+[ext_resource type="PackedScene" uid="uid://b5w2w2q2q2q2" path="res://Prefabs/Player.tscn" id="1_0ba56"]
+[ext_resource type="Script" uid="uid://bh14fstl8dme8" path="res://Scripts/Server.cs" id="1_8rbpu"]
+[ext_resource type="PackedScene" uid="uid://c8ibuhtwhk8wr" path="res://Prefabs/UI/PanelNetworkingUi.tscn" id="2_vsvp5"]
+[ext_resource type="Script" uid="uid://buk87bldnbyle" path="res://Scripts/PlayerSpawner.cs" id="3_8rbpu"]
+[ext_resource type="Script" uid="uid://b6xxeb7wuaj8h" path="res://Scripts/Camera.cs" id="5_xylue"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_sfrck"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sfrck"]
+size = Vector2(32, 32)
+
+[node name="Level" type="Node3D"]
+
+[node name="Server" type="Node" parent="." node_paths=PackedStringArray("_panelNetworkingUI", "_playerSpawner")]
+script = ExtResource("1_8rbpu")
+_panelNetworkingUI = NodePath("../UI/PanelNetworkingUI")
+_playerSpawner = NodePath("../PlayerSpawner")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_sfrck")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_sfrck")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 6.12323e-17, 1, 0, -1, 6.12323e-17, 0, 0, 0)
+shadow_enabled = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="PanelNetworkingUI" parent="UI" instance=ExtResource("2_vsvp5")]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath(".")
+script = ExtResource("3_8rbpu")
+PlayerScene = ExtResource("1_0ba56")
+
+[node name="Camera" type="Camera3D" parent="."]
+script = ExtResource("5_xylue")
